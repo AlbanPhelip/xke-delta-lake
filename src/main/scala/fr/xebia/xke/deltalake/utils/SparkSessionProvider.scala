@@ -10,4 +10,6 @@ trait SparkSessionProvider {
     .appName("Delta Lake XKE")
     .getOrCreate()
 
+  spark.sparkContext.setLogLevel("ERROR")
+
 }
