@@ -3,6 +3,7 @@ package fr.xebia.xke.deltalake
 import fr.xebia.xke.deltalake.utils.SparkSessionProvider
 import fr.xebia.xke.deltalake.utils.ExtensionMethodsUtils._
 import org.apache.spark.sql.{DataFrame, SaveMode}
+import io.delta.tables._
 
 object DeltaLake extends App with SparkSessionProvider {
 
@@ -37,5 +38,9 @@ object DeltaLake extends App with SparkSessionProvider {
   println(s"Time writing parquet: ${t4-t3} ms")
   println(s"Time reading delta: ${t6-t5} ms")
   println(s"Time reading parquet: ${t8-t7} ms")
+
+  val deltaTable: DeltaTable = DeltaTable.forPath(spark, delta)
+
+  deltaTable.history(10).show(truncate = false)
 
 }
