@@ -7,4 +7,6 @@ import io.delta.tables._
 
 object DeltaLake extends App with SparkSessionProvider {
 
+  import spark.implicits._
+
 }
