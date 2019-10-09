@@ -1,6 +1,8 @@
 package fr.xebia.xke.deltalake.utils
 
-import org.apache.spark.sql.{DataFrame, DataFrameReader, DataFrameWriter}
+import io.delta.tables.DeltaTable
+import org.apache.spark.sql.{Column, DataFrame, DataFrameReader, DataFrameWriter}
+import org.apache.spark.sql.functions.col
 
 object ExtensionMethodsUtils {
 
@@ -13,6 +15,16 @@ object ExtensionMethodsUtils {
   implicit class DataFrameReaderOps(dfr: DataFrameReader) {
     def delta(path: String): DataFrame = {
       dfr.format("delta").load(path)
+    }
+  }
+
+  implicit class DeltaTableOps(detaTable: DeltaTable) {
+    def allColumns(newTableName: String): Map[String, Column] = {
+      detaTable
+        .toDF
+        .columns
+        .map(column => column -> col(s"$newTableName.$column"))
+        .toMap
     }
   }
 

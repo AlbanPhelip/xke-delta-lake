@@ -31,16 +31,14 @@ object DeltaLake extends App with SparkSessionProvider {
 
   deltaDf.show()
 
-  val columnsUpdate = deltaDf
-    .columns
-    .map(column => column -> col(s"newPerson.$column"))
-    .toMap
+  val oldTableName = "oldPerson"
+  val newTableName = "newPerson"
 
-  deltaPerson.as("oldPerson")
-    .merge(
-      newPerson.as("newPerson"),
-      "oldPerson.name = newPerson.name"
-    ).whenMatched()
+  val columnsUpdate = deltaPerson.allColumns(newTableName)
+
+  deltaPerson.as(oldTableName)
+    .merge(newPerson.as(newTableName),  $"$oldTableName.name" ===  $"$newTableName.name")
+    .whenMatched()
     .update(columnsUpdate)
     .whenNotMatched
     .insert(columnsUpdate)
