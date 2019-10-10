@@ -23,6 +23,7 @@ object DeltaLake extends App with SparkSessionProvider {
 
   val newPerson = List(
     Person("Toto", 22, "2019-10-09"),
+    Person("Toto", 23, "2019-10-09"),
     Person("Tata", 51, "2019-10-09")
   ).toDF()
 
