@@ -2,10 +2,9 @@ package fr.xebia.xke.deltalake
 
 import fr.xebia.xke.deltalake.model.Person
 import fr.xebia.xke.deltalake.utils.ExtensionMethodsUtils._
-import fr.xebia.xke.deltalake.utils.SparkSessionProvider
+import fr.xebia.xke.deltalake.utils.{FileUtils, SparkSessionProvider}
 import io.delta.tables._
-import org.apache.spark.sql.functions._
-import org.apache.spark.sql.{Dataset, Row, SaveMode}
+import org.apache.spark.sql.SaveMode
 
 object DeltaLake extends App with SparkSessionProvider {
 
@@ -13,6 +12,8 @@ object DeltaLake extends App with SparkSessionProvider {
 
   val rootPath = args.head
   val personPath = s"$rootPath/person"
+
+  FileUtils.delete(personPath)
 
   val persons = List(
     Person("Toto", 21, "2019-10-01"),
@@ -27,13 +28,12 @@ object DeltaLake extends App with SparkSessionProvider {
   ).toDF()
 
   val deltaPerson = DeltaTable.forPath(personPath)
-  val deltaDf: Dataset[Row] = deltaPerson.toDF
 
-  deltaDf.show()
+  println("Before merge")
+  deltaPerson.toDF.show()
 
   val oldTableName = "oldPerson"
   val newTableName = "newPerson"
-
   val columnsUpdate = deltaPerson.allColumns(newTableName)
 
   deltaPerson.as(oldTableName)
@@ -44,6 +44,10 @@ object DeltaLake extends App with SparkSessionProvider {
     .insert(columnsUpdate)
     .execute()
 
-  deltaDf.show()
+  println("After merge")
+  deltaPerson.toDF.show()
+  spark.read.delta(personPath).show()
+
+  deltaPerson.history.orderBy("version").show(truncate = false)
 
 }
