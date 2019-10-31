@@ -25,6 +25,7 @@ object DeltaDelete extends App with SparkSessionProvider {
 
   // Create Delta Table
   val deltaPerson = DeltaTable.forPath(personPath)
+
   deltaPerson.delete($"name" === "Toto")
 
   println("Final parquet read")
