@@ -16,15 +16,15 @@ object DeltaLake extends App with SparkSessionProvider {
   FileUtils.delete(personPath)
 
   val persons = List(
-    Person("Toto", 21, "2019-10-01"),
-    Person("Titi", 30, "2019-10-01")
+    Person("Toto", 21, "2019-11-05"),
+    Person("Titi", 30, "2019-11-05")
   ).toDF()
 
   persons.write.mode(SaveMode.Overwrite).delta(personPath)
 
   val newPerson = List(
-    Person("Toto", 22, "2019-10-09"),
-    Person("Tata", 51, "2019-10-09")
+    Person("Toto", 22, "2019-11-11"),
+    Person("Tata", 51, "2019-11-11")
   ).toDF()
 
   val deltaPerson = DeltaTable.forPath(personPath)

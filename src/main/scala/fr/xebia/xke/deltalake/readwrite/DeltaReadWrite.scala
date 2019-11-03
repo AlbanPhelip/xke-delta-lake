@@ -5,15 +5,15 @@ import fr.xebia.xke.deltalake.utils.{FileUtils, SparkSessionProvider}
 import fr.xebia.xke.deltalake.utils.ExtensionMethodsUtils._
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
-object DeltaWrite extends App with SparkSessionProvider {
+object DeltaReadWrite extends App with SparkSessionProvider {
 
   import spark.implicits._
 
   val rootPath = args.head
 
   val df: DataFrame = List(
-    Person("Toto", 21, "2019-10-01"),
-    Person("Titi", 30, "2019-10-01")
+    Person("Toto", 21, "2019-11-05"),
+    Person("Titi", 30, "2019-11-05")
   ).toDF()
 
   def runReadAndWrite(saveMode: SaveMode): Unit = {

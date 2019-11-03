@@ -17,8 +17,8 @@ object DeltaVaccum extends App with SparkSessionProvider {
   FileUtils.delete(personPath)
 
   val persons = List(
-    Person("Toto", 21, "2019-10-01"),
-    Person("Titi", 30, "2019-10-01")
+    Person("Toto", 21, "2019-11-05"),
+    Person("Titi", 30, "2019-11-05")
   ).toDF()
 
   persons.write.mode(SaveMode.Overwrite).delta(personPath)
