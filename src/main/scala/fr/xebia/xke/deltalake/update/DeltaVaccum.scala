@@ -1,11 +1,12 @@
-package fr.xebia.xke.deltalake
+package fr.xebia.xke.deltalake.update
 
 import fr.xebia.xke.deltalake.model.Person
 import fr.xebia.xke.deltalake.utils.{FileUtils, SparkSessionProvider}
+import fr.xebia.xke.deltalake.utils.ExtensionMethodsUtils._
 import io.delta.tables.DeltaTable
 import org.apache.spark.sql.SaveMode
 
-object DeltaDelete extends App with SparkSessionProvider {
+object DeltaVaccum extends App with SparkSessionProvider {
 
   import spark.implicits._
 
@@ -22,15 +23,9 @@ object DeltaDelete extends App with SparkSessionProvider {
 
   persons.write.mode(SaveMode.Overwrite).delta(personPath)
 
-  // Create Delta Table
   val deltaPerson = DeltaTable.forPath(personPath)
 
-  deltaPerson.delete($"name" === "Toto")
-
-  println("Final parquet read")
-  spark.read.parquet(personPath).show()
-  println("Final delta read")
-  spark.read.delta(personPath).show()
+  deltaPerson.vacuum().show()
 
   deltaPerson.history().orderBy("version").show(truncate = false)
 
