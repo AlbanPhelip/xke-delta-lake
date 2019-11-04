@@ -20,9 +20,8 @@ object DeltaReadWrite extends App with SparkSessionProvider {
     val personPath = s"$rootPath/person-$saveMode"
     FileUtils.delete(personPath)
 
-    df.write.mode(saveMode).delta(personPath)
-    Thread.sleep(3000)
-    df.write.mode(saveMode).delta(personPath)
+    df.coalesce(1).write.mode(saveMode).delta(personPath)
+    df.coalesce(1).write.mode(saveMode).delta(personPath)
 
     println(s"----- $saveMode -----")
     println(s"Delta read with $saveMode mode")

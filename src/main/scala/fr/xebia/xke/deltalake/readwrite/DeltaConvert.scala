@@ -21,7 +21,7 @@ object DeltaConvert extends App with SparkSessionProvider {
 
   dfPerson.write.mode(SaveMode.Append).parquet(personPath)
 
-  val deltaTable = DeltaTable.convertToDelta(spark, s"parquet.`$personPath`", "date string")
+  val deltaTable = DeltaTable.convertToDelta(spark, s"parquet.`$personPath`")
 
   deltaTable.history().show(truncate = false)
 }

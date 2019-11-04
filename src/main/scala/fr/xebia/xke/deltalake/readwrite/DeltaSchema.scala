@@ -29,6 +29,7 @@ object DeltaSchema extends App with SparkSessionProvider {
   dfPerson.write.mode(SaveMode.Append).parquet(personPathParquet)
   dfPeople.write.mode(SaveMode.Append).parquet(personPathParquet)
 
+  println("Parquet")
   spark.read.parquet(personPathParquet).show()
 
   // Delta

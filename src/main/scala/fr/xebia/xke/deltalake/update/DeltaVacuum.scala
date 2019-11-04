@@ -44,6 +44,4 @@ object DeltaVacuum extends App with SparkSessionProvider {
   println("Delta read")
   spark.read.delta(personPath).show()
 
-  deltaPerson.history().show(truncate = false)
-
 }
