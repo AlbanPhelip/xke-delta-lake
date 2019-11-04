@@ -35,7 +35,7 @@ object DeltaSchema extends App with SparkSessionProvider {
   dfPerson.write.mode(SaveMode.Append).delta(personPathDelta)
   dfPeople.write
     .mode(SaveMode.Append)
-    .option("mergeSchema", "true")
+    //.option("mergeSchema", "true")
     .delta(personPathDelta)
 
   spark.read.delta(personPathDelta).show()
