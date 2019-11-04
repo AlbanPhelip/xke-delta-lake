@@ -1,5 +1,6 @@
 package fr.xebia.xke.deltalake.utils
 
+import org.apache.spark.sql.streaming.{DataStreamReader, DataStreamWriter, StreamingQuery}
 import org.apache.spark.sql.{DataFrame, DataFrameReader, DataFrameWriter}
 
 object ExtensionMethodsUtils {
@@ -16,4 +17,15 @@ object ExtensionMethodsUtils {
     }
   }
 
+  implicit class DataStreamWriterOps[T](dfsw: DataStreamWriter[T]) {
+    def delta(path: String): StreamingQuery = {
+      dfsw.format("delta").start(path)
+    }
+  }
+
+  implicit class DataStreamReaderOps(dsr: DataStreamReader) {
+    def delta(path: String): DataFrame = {
+      dsr.format("delta").load(path)
+    }
+  }
 }

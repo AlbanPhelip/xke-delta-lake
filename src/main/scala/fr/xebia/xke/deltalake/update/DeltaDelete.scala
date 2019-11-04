@@ -42,5 +42,4 @@ object DeltaDelete extends App with SparkSessionProvider {
   println("History")
   deltaPerson.history().show(truncate = false)
 
-
 }
