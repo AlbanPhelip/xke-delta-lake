@@ -40,21 +40,21 @@ object DeltaMerge extends App with SparkSessionProvider {
 
   val oldTableName = "old-customer"
   val newTableName = "new-customer"
-  val columnsUpdate = deltaCustomer.allColumns(newTableName)
 
   deltaCustomer.as(oldTableName)
-    .merge(newCustomers.as(newTableName),  $"$oldTableName.customerId" ===  $"$newTableName.customerId")
+    .merge(newCustomers.as(newTableName),  $"$oldTableName.id" ===  $"$newTableName.id")
     .whenMatched(col(s"$newTableName.deleted") === true)
     .delete()
     .whenMatched()
-    .update(columnsUpdate)
+    .updateAll()
     .whenNotMatched()
-    .insert(columnsUpdate)
+    .insertAll()
     .execute()
 
   println("After merge")
   spark.read.delta(personPath).show()
 
-  deltaCustomer.history.orderBy("version").show(truncate = false)
+  println("History")
+  deltaCustomer.history.show(truncate = false)
 
 }
