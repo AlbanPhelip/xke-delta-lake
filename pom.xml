@@ -13,9 +13,9 @@
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
 
         <java.version>1.8</java.version>
-        <scala.version>2.12.8</scala.version>
+        <scala.version>2.12.10</scala.version>
         <scala.dep.version>2.12</scala.dep.version>
-        <spark.version>2.4.4</spark.version>
+        <spark.version>3.0.1</spark.version>
         <delta.lake.version>0.7.0</delta.lake.version>
         <scalatest.version>3.0.5</scalatest.version>
     </properties>
