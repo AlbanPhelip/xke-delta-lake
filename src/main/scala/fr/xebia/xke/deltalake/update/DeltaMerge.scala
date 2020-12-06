@@ -4,7 +4,6 @@ import fr.xebia.xke.deltalake.model.{CustomerV1, CustomerV2}
 import fr.xebia.xke.deltalake.utils.ExtensionMethodsUtils._
 import fr.xebia.xke.deltalake.utils.{FileUtils, SparkSessionProvider}
 import io.delta.tables.DeltaTable
-import org.apache.spark.sql.functions.col
 import org.apache.spark.sql.{DataFrame, SaveMode}
 
 object DeltaMerge extends App with SparkSessionProvider {

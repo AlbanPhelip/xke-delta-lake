@@ -30,10 +30,6 @@ object ThreadTest extends App with SparkSessionProvider {
 
   def write1(): Unit = {
     for (i <- 1 to 10) {
-      val newCustomers: DataFrame = List(
-        (1, "Alan", "Turing", 38 + i, "2020-12-08")
-      ).toDF("id", "first_name", "last_name", "age", "date")
-
       println(s"Before merge1 #$i")
       deltaCustomer.update($"date" === "2020-12-08" and $"id" === 1, Map("age" -> $"age".+(1)))
 
