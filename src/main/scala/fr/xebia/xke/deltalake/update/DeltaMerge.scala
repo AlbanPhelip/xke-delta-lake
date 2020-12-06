@@ -1,6 +1,6 @@
 package fr.xebia.xke.deltalake.update
 
-import fr.xebia.xke.deltalake.model.Customer
+import fr.xebia.xke.deltalake.model.{CustomerV1, CustomerV2}
 import fr.xebia.xke.deltalake.utils.ExtensionMethodsUtils._
 import fr.xebia.xke.deltalake.utils.{FileUtils, SparkSessionProvider}
 import io.delta.tables.DeltaTable
@@ -17,17 +17,17 @@ object DeltaMerge extends App with SparkSessionProvider {
   FileUtils.delete(personPath)
 
   val customers: DataFrame = List(
-    Customer(0, "Grace", "Hopper", 50, deleted = false),
-    Customer(1, "Alan", "Turing", 38, deleted = false),
-    Customer(2, "Margaret", "Hamilton", 41, deleted = false)
+    CustomerV1(0, "Grace", "Hopper", 50, deleted = false),
+    CustomerV1(1, "Alan", "Turing", 38, deleted = false),
+    CustomerV1(2, "Margaret", "Hamilton", 41, deleted = false)
   ).toDF()
 
   customers.coalesce(3).write.mode(SaveMode.Overwrite).delta(personPath)
 
   val newCustomers: DataFrame = List(
-    Customer(1, "Alan", "Turing", 38, deleted = true),
-    Customer(2, "Margaret", "Hamilton", 42, deleted = false),
-    Customer(3, "Linus", "Torvalds", 23, deleted = false)
+    CustomerV2(1, "Alan", "Turing", 38, "UK", deleted = true),
+    CustomerV2(2, "Margaret", "Hamilton", 42, "USA", deleted = false),
+    CustomerV2(3, "Linus", "Torvalds", 23, "Finland", deleted = false)
   ).toDF()
 
   val deltaCustomer = DeltaTable.forPath(personPath)
@@ -38,12 +38,11 @@ object DeltaMerge extends App with SparkSessionProvider {
   println("New data")
   newCustomers.show()
 
-  val oldTableName = "old-customer"
-  val newTableName = "new-customer"
+  spark.conf.set("spark.databricks.delta.schema.autoMerge.enabled", "true")
 
-  deltaCustomer.as(oldTableName)
-    .merge(newCustomers.as(newTableName),  $"$oldTableName.id" ===  $"$newTableName.id")
-    .whenMatched(col(s"$newTableName.deleted") === true)
+  deltaCustomer.as("old-customer")
+    .merge(newCustomers.as("new-customer"), $"old-customer.id" === $"new-customer.id")
+    .whenMatched($"new-customer.deleted" === true)
     .delete()
     .whenMatched()
     .updateAll()
@@ -57,4 +56,5 @@ object DeltaMerge extends App with SparkSessionProvider {
   println("History")
   deltaCustomer.history.show(truncate = false)
 
+  deltaCustomer.generate("symlink_format_manifest")
 }

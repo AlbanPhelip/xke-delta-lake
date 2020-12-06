@@ -14,14 +14,20 @@ object DeltaHistory extends App with SparkSessionProvider {
   val personPath = s"$rootPath/person-history"
   FileUtils.delete(personPath)
 
-  val df: DataFrame = List(
-    Person("Toto", 21, "2019-11-05"),
-    Person("Titi", 30, "2019-11-05")
+  val df1: DataFrame = List(
+    Person("Toto", 21, "2020-12-07"),
+    Person("Titi", 30, "2020-12-07")
   ).toDF()
 
-  df.write.mode(SaveMode.Append).delta(personPath)
-  df.write.mode(SaveMode.Append).delta(personPath)
-  df.write.mode(SaveMode.Append).delta(personPath)
+  val df2: DataFrame = List(
+    Person("Toto", 21, "2020-12-07"),
+    Person("Titi", 30, "2020-12-07"),
+    Person("Tata", 42, "2020-12-07")
+  ).toDF()
+
+  df1.coalesce(1).write.mode(SaveMode.Append).option("userMetadata", "Initial write").delta(personPath)
+  df2.coalesce(2).write.mode(SaveMode.Append).option("userMetadata", "Second write").delta(personPath)
+  df2.coalesce(3).write.mode(SaveMode.Append).option("userMetadata", "Third write").delta(personPath)
 
   val history: DataFrame = DeltaTable.forPath(personPath).history()
 

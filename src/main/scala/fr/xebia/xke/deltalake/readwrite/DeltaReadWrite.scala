@@ -12,8 +12,8 @@ object DeltaReadWrite extends App with SparkSessionProvider {
   val rootPath = args.head
 
   val df: DataFrame = List(
-    Person("Toto", 21, "2019-11-05"),
-    Person("Titi", 30, "2019-11-05")
+    Person("Toto", 21, "2020-12-07"),
+    Person("Titi", 30, "2020-12-07")
   ).toDF()
 
   def runReadAndWrite(saveMode: SaveMode): Unit = {
