@@ -15,7 +15,7 @@
         <java.version>1.8</java.version>
         <scala.version>2.12.10</scala.version>
         <scala.dep.version>2.12</scala.dep.version>
-        <spark.version>3.0.1</spark.version>
+        <spark.version>3.4.0</spark.version>
         <delta.lake.version>0.7.0</delta.lake.version>
         <scalatest.version>3.0.5</scalatest.version>
     </properties>
